@@ -1,0 +1,47 @@
+<h1><i class="medium material-icons">mood</i>Nota Aluno</h1>
+<div class="row">
+    <form class="col s12" action="mote.php" method="post">
+        <div class="row">
+            <div class="input-field col s12">
+                <input placeholder="Ex 10" maxlength="2" max="10" required min="0" id="nota1" type="number" class="validate">
+                <label class="active" for="nota1">Nota 1</label>
+                <span class="helper-text" data-error="Campo não pode ser vazio" data-success="Ok"></span>
+            </div>
+            <div class="input-field col s12">
+                <input placeholder="Ex 10" max="10" min="0" id="nota2" type="number" class="validate">
+                <label class="active" for="nota2">Nota 2</label>
+                <span class="helper-text" data-error="nota maior que 10" data-success="Ok"></span>
+            </div>
+            <div class="input-field col s12">
+                <input placeholder="Ex 10" max="10" min="0" id="nota3" type="number" class="validate">
+                <label class="active" for="nota3">Nota 3</label>
+                <span class="helper-text" data-error="nota maior que 10" data-success="Ok"></span>
+            </div>
+            <div class="input-field col s12">
+                <input placeholder="Ex 10" max="10" min="0" id="nota4" type="number" class="validate">
+                <label class="active" for="nota4">Nota 4</label>
+                <span class="helper-text" data-error="nota maior que 10" data-success="Ok"></span>
+            </div>
+        </div>
+    </form>
+
+    <div class="row">
+        <div class="col s12">
+            <button onclick="calcularNota()" class="btn waves-effect waves-light" type="submit" name="action">Calcular
+                <i class="material-icons right">send</i>
+            </button>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="row">
+    <div class="col s12 m12">
+        <div class="card-panel teal">
+            <h1 id="resultado"></h1>
+        </div>
+    </div>
+</div>
+
+<script src="../js/nota-aluno.js"></script>

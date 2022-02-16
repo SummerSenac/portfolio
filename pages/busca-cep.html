@@ -1,0 +1,45 @@
+<h1 id="title"><i class="medium material-icons">search</i>Busca CEP</h1>
+<div class="row">
+    <form class="col s12">
+        <div class="row">
+            <!-- Campo cep -->
+            <div class="input-field col s12">
+                <input onmouseout="consultarCepAjax()" placeholder="Ex: 51030-300" id="cep" type="text"
+                    class="validate">
+                <label class="active" for="cep">CEP</label>
+            </div>
+            <div class="input-field col s12">
+                <input placeholder="Ex: Recife" id="localidade" type="text" class="validate">
+                <label class="active" for="localidade">Cidade</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12">
+                <input placeholder="Ex: Rua nova" id="logradouro" type="text" class="validate">
+                <label class="active" for="logradouro">Rua</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12">
+                <input id="bairro" type="text" placeholder="Ex: Pina" class="validate">
+                <label class="active" for="bairro">Bairro</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12">
+                <input id="uf" placeholder="Ex: PE" type="text" class="validate">
+                <label class="active" for="uf">Estado</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12">
+                <input placeholder="Ex: 81" id="ddd" type="text" class="validate">
+                <label class="active" for="ddd">DDD</label>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    $("#cep").focus()
+</script>
