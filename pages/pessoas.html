@@ -1,5 +1,9 @@
-<div class="row">
-    <h4>Lista de alunos</h4>
+<h4>Lista de alunos</h4>
+<button id="btnInserir" onclick="addAluno()" class="btn waves-effect waves-light" name="action">Inserir novo
+    <i class="material-icons right">add</i>
+</button>
+
+<div hidden id="formCrud" class="row">
     <form class="col s12">
         <div class="row">
             <div class="input-field col s12">
@@ -16,11 +20,14 @@
             </div>
         </div>
     </form>
-    <button onclick="salvarDados()" class="btn waves-effect waves-light" name="action">Salvar
+    <button id="btnSalvar" onclick="salvarDados()" class="btn waves-effect waves-light" name="action">Salvar
         <i class="material-icons right">send</i>
     </button>
-    <button onclick="listarDados()" class="btn waves-effect waves-light" name="action">Listar
+    <button hidden id="btnAtualizar" onclick="atualizarDados()" class="btn waves-effect waves-light" name="action">Atualizar
         <i class="material-icons right">send</i>
+    </button>
+    <button onclick="cancelar()" class="btn waves-effect waves-light" name="action">Cancelar
+        <i class="material-icons right">close</i>
     </button>
 </div>
 
@@ -29,8 +36,28 @@
 </ul>
 
 <script>
+
+    function addAluno() {
+        $('#formCrud').show()
+        $('#pessoas').hide()
+        $('#btnSalvar').show()
+        $('#btnAtualizar').hide()
+    }
+
+    function putAluno(){
+        $('#formCrud').show()
+        $('#pessoas').hide()
+        $('#btnSalvar').hide()
+        $('#btnAtualizar').show()
+    }
+
+    function cancelar() {
+        $('#formCrud').hide()
+        $('#pessoas').show()
+    }
+
     function listarDados() {
-        $.getJSON('http://localhost:3000/alunos', function (data, status) {
+        $.getJSON('https://api-server-senac.herokuapp.com/alunos', function (data, status) {
             console.log(data)
             let pessoas = []
 
@@ -52,13 +79,20 @@
         })
     }
 
+    listarDados()
 
 
     function pegaId(id) {
+       
         console.log('o id é', id)
-        $.getJSON(`http://localhost:3000/alunos/${id}`, function (data, status) {
+        $.getJSON(`https://api-server-senac.herokuapp.com/alunos/${id}`, function (data, status) {
             console.log(data)
+            $('#nome').val(data.nome)
+            $('#curso').val(data.curso)
+            $('#matricula').val(data.matricula)
         })
+        putAluno()
+       
     }
 
     function salvarDados() {
@@ -75,8 +109,34 @@
         //     console.log('os dados foram salvos', res)
         // })
 
-        $.post("http://localhost:3000/alunos", dadosSalvar, function (result) {
+        $.post("https://api-server-senac.herokuapp.com/alunos", dadosSalvar, function (result) {
             console.log('os dados foram salvos', result)
         })
+    }
+
+    function atualizarDados() {
+        var dados = $("input")
+
+        dadosSalvar = {
+            nome: dados[0].value,
+            curso: dados[1].value,
+            matricula: dados[2].value
+        }
+        console.log('dados pra salvar', dadosSalvar)
+
+        // fetch("http://localhost:3000/alunos", {method: "post", body: dadosSalvar}).then(function (res){
+        //     console.log('os dados foram salvos', res)
+        // })
+
+        $.ajax({
+            type: "PUT",
+            url: `https://api-server-senac.herokuapp.com/alunos/1`,
+            dataType: "jsonp",
+            data: dadosSalvar,
+            success: function (response) {
+           console.log("atualizado", response)
+            }
+        });
+
     }
 </script>
