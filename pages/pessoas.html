@@ -1,4 +1,4 @@
-<h4>Lista de alunos</h4>
+<h4 id="titleCrud">Lista de alunos</h4>
 <button id="btnInserir" onclick="addAluno()" class="btn waves-effect waves-light" name="action">Inserir novo
     <i class="material-icons right">add</i>
 </button>
@@ -6,6 +6,10 @@
 <div hidden id="formCrud" class="row">
     <form class="col s12">
         <div class="row">
+            <div id="inputId" class="input-field col s12">
+                <input disabled placeholder="0" id="id" type="text">
+                <label class="active" for="id">Id</label>
+            </div>
             <div class="input-field col s12">
                 <input placeholder="Henning" id="nome" type="text" class="validate">
                 <label class="active" for="first_name">Nome</label>
@@ -23,7 +27,8 @@
     <button id="btnSalvar" onclick="salvarDados()" class="btn waves-effect waves-light" name="action">Salvar
         <i class="material-icons right">send</i>
     </button>
-    <button hidden id="btnAtualizar" onclick="atualizarDados()" class="btn waves-effect waves-light" name="action">Atualizar
+    <button hidden id="btnAtualizar" onclick="atualizarDados()" class="btn waves-effect waves-light"
+        name="action">Atualizar
         <i class="material-icons right">send</i>
     </button>
     <button onclick="cancelar()" class="btn waves-effect waves-light" name="action">Cancelar
@@ -37,25 +42,49 @@
 
 <script>
 
+// Mostrar o formulário de inserção do aluno
     function addAluno() {
+        $('#titleCrud').html('Inserir aluno');
         $('#formCrud').show()
         $('#pessoas').hide()
+        $('#inputId').hide()
+        $('#btnInserir').hide()
         $('#btnSalvar').show()
         $('#btnAtualizar').hide()
+        limparForm()
     }
 
-    function putAluno(){
+    // Limpar dados dos formulário
+    function limparForm() {
+        let inputs = $('input')
+        for (let index = 0; index < inputs.length; index++) {
+            inputs[index].value = ''
+        }
+
+        // $('#nome').val('')
+        // $('#curso').val('')
+        // $('#matricula').val('')
+    }
+
+    // Exibir formulário de edição do aluno
+    function putAluno() {
+        $('#btnInserir').hide()
         $('#formCrud').show()
         $('#pessoas').hide()
         $('#btnSalvar').hide()
         $('#btnAtualizar').show()
     }
 
+    // Mostrar lista de alunos e ocultar formulário
     function cancelar() {
+        $('#titleCrud').html('Listar alunos');
         $('#formCrud').hide()
         $('#pessoas').show()
+        $('#btnInserir').show()
+        $('#inputId').show()
     }
 
+    // Carregar dados de todos os alunos
     function listarDados() {
         $.getJSON('https://api-server-senac.herokuapp.com/alunos', function (data, status) {
             console.log(data)
@@ -69,7 +98,9 @@
             <p>${pessoa.curso || 'Não tem'} <br>
              ${pessoa.matricula || 'Não tem'}
             </p>
-            <a href="#!" class="secondary-content"><i onclick="pegaId(${pessoa.id})" class="material-icons">remove_red_eye</i></a>
+            <a href="#!" class="actionBtnView secondary-content"><i onclick="verId(${pessoa.id})" class="material-icons">remove_red_eye</i></a>
+            <a href="#!" class="actionBtnEdit secondary-content"><i onclick="pegarId(${pessoa.id})" class="material-icons">create</i></a>
+            <a href="#!" class="secondary-content"><i onclick="deletarAluno(${pessoa.id})" class="material-icons">delete_forever</i></a>
             </li>
             `)
             }
@@ -79,29 +110,51 @@
         })
     }
 
+    // Carregar dados de um aluno no inicio da página
     listarDados()
 
+    // Ver dados do aluno pelo id
+    function verId(id) {
+        $('#inputId').show()
+        $('#titleCrud').html('Visualizar aluno');
 
-    function pegaId(id) {
-       
         console.log('o id é', id)
         $.getJSON(`https://api-server-senac.herokuapp.com/alunos/${id}`, function (data, status) {
             console.log(data)
-            $('#nome').val(data.nome)
-            $('#curso').val(data.curso)
-            $('#matricula').val(data.matricula)
+            $('#id').val(data.id)
+            $('#nome').val(data.nome).attr('disabled', true)
+            $('#curso').val(data.curso).attr('disabled', true)
+            $('#matricula').val(data.matricula).attr('disabled', true)
         })
         putAluno()
-       
+
     }
 
+    // Pegar dados do aluno pelo id
+    function pegarId(id) {
+        $('#inputId').show()
+        $('#titleCrud').html('Atualizar aluno');
+
+        console.log('o id é', id)
+        $.getJSON(`https://api-server-senac.herokuapp.com/alunos/${id}`, function (data, status) {
+            console.log(data)
+            $('#id').val(data.id)
+            $('#nome').val(data.nome).attr('disabled', false)
+            $('#curso').val(data.curso).attr('disabled', false)
+            $('#matricula').val(data.matricula).attr('disabled', false)
+        })
+        putAluno()
+
+    }
+
+    // Salvar dados do aluno
     function salvarDados() {
         var dados = $("input")
 
         dadosSalvar = {
-            nome: dados[0].value,
-            curso: dados[1].value,
-            matricula: dados[2].value
+            nome: dados[1].value,
+            curso: dados[2].value,
+            matricula: dados[3].value
         }
         console.log('dados pra salvar', dadosSalvar)
 
@@ -111,16 +164,20 @@
 
         $.post("https://api-server-senac.herokuapp.com/alunos", dadosSalvar, function (result) {
             console.log('os dados foram salvos', result)
+            cancelar()
+            listarDados()
         })
     }
 
+
+    // Atualizar dados do aluno
     function atualizarDados() {
         var dados = $("input")
 
         dadosSalvar = {
-            nome: dados[0].value,
-            curso: dados[1].value,
-            matricula: dados[2].value
+            nome: dados[1].value,
+            curso: dados[2].value,
+            matricula: dados[3].value
         }
         console.log('dados pra salvar', dadosSalvar)
 
@@ -130,13 +187,26 @@
 
         $.ajax({
             type: "PUT",
-            url: `https://api-server-senac.herokuapp.com/alunos/1`,
-            dataType: "jsonp",
+            url: `https://api-server-senac.herokuapp.com/alunos/${dados[0].value}`,
             data: dadosSalvar,
             success: function (response) {
-           console.log("atualizado", response)
+                console.log("atualizado", response)
+                cancelar()
+                listarDados()
             }
         });
 
+    }
+
+    function deletarAluno(id) {
+        $.ajax({
+            type: "DELETE",
+            url: `https://api-server-senac.herokuapp.com/alunos/${id}`,
+            success: function (response) {
+                console.log("deletado", response)
+                cancelar()
+                listarDados()
+            }
+        });
     }
 </script>

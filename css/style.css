@@ -17,3 +17,10 @@
   text-align: center; 
   color: white;
 }
+
+.actionBtnView{
+  margin-right: 88px
+}
+.actionBtnEdit{
+  margin-right: 42px
+}
