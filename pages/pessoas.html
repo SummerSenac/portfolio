@@ -3,30 +3,55 @@
     <i class="material-icons right">add</i>
 </button>
 
+<style>
+    label {
+        width: 100%;
+    }
+
+    .input-field label {
+        font-size: 0.8rem;
+        -webkit-transform: translateY(-140%);
+        -moz-transform: translateY(-140%);
+        -ms-transform: translateY(-140%);
+        -o-transform: translateY(-140%);
+        transform: translateY(-140%);
+    }
+</style>
+
 <div hidden id="formCrud" class="row">
-    <form class="col s12">
+    <form id="formularioValidation" novalidate="novalidate" class="col s12">
         <div class="row">
             <div id="inputId" class="input-field col s12">
                 <input disabled placeholder="0" id="id" type="text">
-                <label class="active" for="id">Id</label>
-            </div>
-            <div class="input-field col s12">
-                <input placeholder="Henning" id="nome" type="text" class="validate">
-                <label class="active" for="first_name">Nome</label>
-            </div>
-            <div class="input-field col s12">
-                <input placeholder="Frontend" id="curso" type="text" class="validate">
-                <label class="active" for="first_name">Curso</label>
-            </div>
-            <div class="input-field col s12">
-                <input placeholder="ds54455" id="matricula" type="text" class="validate">
-                <label class="active" for="first_name">Matricula</label>
+                <label for="id">Id</label>
             </div>
         </div>
+        <div class="row">
+            <div class="input-field col s12">
+                <input placeholder="Henning" required="" aria-required="true" id="nome" name="nome" type="text">
+                <label class="active" for="nome">Nome</label>
+                <span for="nome" class="helper-text" data-error="wrong" data-success="right"></span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12">
+                <input placeholder="Frontend" required="" aria-required="true" id="curso" name="curso" type="text">
+                <label class="active" for="curso">Curso</label>
+                <span for="curso" class="helper-text" data-error="wrong" data-success="right"></span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12">
+                <input placeholder="ds54455" required="" aria-required="true" id="matricula" name="matricula"
+                    type="text">
+                <label class="active" for="matricula">Matricula</label>
+                <span for="matricula" class="helper-text" data-error="wrong" data-success="right"></span>
+            </div>
+        </div>
+        <button id="btnSalvar" onclick="salvarDados()" class="btn waves-effect waves-light" name="action">Salvar
+            <i class="material-icons right">send</i>
+        </button>
     </form>
-    <button id="btnSalvar" onclick="salvarDados()" class="btn waves-effect waves-light" name="action">Salvar
-        <i class="material-icons right">send</i>
-    </button>
     <button hidden id="btnAtualizar" onclick="atualizarDados()" class="btn waves-effect waves-light"
         name="action">Atualizar
         <i class="material-icons right">send</i>
@@ -42,8 +67,10 @@
 
 <script>
 
-// Mostrar o formulário de inserção do aluno
+    // Mostrar o formulário de inserção do aluno
     function addAluno() {
+
+        limparForm()
         $('#titleCrud').html('Inserir aluno');
         $('#formCrud').show()
         $('#pessoas').hide()
@@ -51,7 +78,7 @@
         $('#btnInserir').hide()
         $('#btnSalvar').show()
         $('#btnAtualizar').hide()
-        limparForm()
+
     }
 
     // Limpar dados dos formulário
@@ -59,6 +86,8 @@
         let inputs = $('input')
         for (let index = 0; index < inputs.length; index++) {
             inputs[index].value = ''
+            $(inputs[index]).removeClass('invalid')
+            $(inputs[index]).removeClass('valid')
         }
 
         // $('#nome').val('')
@@ -148,7 +177,71 @@
     }
 
     // Salvar dados do aluno
-    function salvarDados() {
+    function salvarDados() {;
+
+        $.validator.setDefaults({
+            errorClass: 'invalid',
+            validClass: "valid",
+            errorPlacement: function (error, element) {
+                $(element)
+                    .closest("form")
+                    .find("span[for='" + element.attr("id") + "']")
+                    .attr('data-error', error.text());
+            },
+            submitHandler: function (form) {
+
+                $.post("https://api-server-senac.herokuapp.com/alunos", dadosSalvar, function (result) {
+                    console.log('os dados foram salvos', result)
+                    cancelar()
+                    listarDados()
+                })
+                console.log('form ok');
+            }
+        });
+
+        $("#formularioValidation").validate({
+            // debug: true,
+            rules: {
+                nome: {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 4,
+                    rangelength: [3, 4] //Realiza a mesma coisa dos anteriores
+                },
+                curso: {
+                    required: true,
+                    min: 10,
+                    max: 15,
+                    range: [10, 15] //Realiza a mesma coisa dos anteriores
+                },
+                matricula: {
+                    required: true,
+                    min: 10,
+                    max: 15,
+                    range: [10, 15] //Realiza a mesma coisa dos anteriores
+                }
+            },
+            messages: {
+                //exemplo
+                nome: {
+                    minlength: "O valor mínimo é {0}",
+                    maxlength: "O valor máximo do campo é {0}",
+                    required: 'O campo nome é obrigatório',
+                },
+                curso: {
+                    min: "O valor mínimo é {0}",
+                    max: "O valor máximo do campo é {0}",
+                    range: "O valor mínimo é {0} e o máximo é {1}",
+                    required: 'O campo nome é obrigatório',
+                },
+                curso: {
+                    required: 'O campo nome é obrigatório',
+                }
+            }
+        });
+        // console.log($('#formularioValidation').valid())
+
+
         var dados = $("input")
 
         dadosSalvar = {
@@ -156,17 +249,8 @@
             curso: dados[2].value,
             matricula: dados[3].value
         }
-        console.log('dados pra salvar', dadosSalvar)
 
-        // fetch("http://localhost:3000/alunos", {method: "post", body: dadosSalvar}).then(function (res){
-        //     console.log('os dados foram salvos', res)
-        // })
 
-        $.post("https://api-server-senac.herokuapp.com/alunos", dadosSalvar, function (result) {
-            console.log('os dados foram salvos', result)
-            cancelar()
-            listarDados()
-        })
     }
 
 
