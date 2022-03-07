@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+</head>
+
+<body>
+    <table id="tableData" appml-data="dados">
+        <tr>
+            <th>Customer</th>
+            <th>City</th>
+            <th>Country</th>
+        </tr>
+        <tr appml-repeat="records">
+            <td>{{CustomerName}}</td>
+            <td>{{City}}</td>
+            <td>{{Country}}</td>
+        </tr>
+    </table>
+    <div id="nome1" appml-data="data2">
+        {{nome}}
+        {{fn}}
+    </div>
+
+    <button onclick="somarEla()">Somar</button>
+    <button onclick="(appml('nome1').run(subtrairNome()))">Substrair</button>
+    <button onclick="(appml('tableData').run(printData()))">Muda dado</button>
+</body>
+<input type="text" name="nome" id="nome" label="Nome" oninput="mudarNome(event)">
+<script src="https://www.w3schools.com/appml/2.0.3/appml.js"></script>
+<!-- <script type="module" src="./script2.js"></script> -->
+
+<script>
+    
+    let i = 0
+    var data2 = {
+        "nome": 'henning',
+        "fn": i
+    };
+    
+    var dados;
+
+    function printData(){
+        console.log(this.dados.records[0].CustomerName = this.data2.nome);
+    }
+    function mudarNome(e) {
+        console.log(e.target.value);
+        let nome = e.target.value
+        appml('nome1').run(this.data2.nome = nome)
+    }
+    function somarEla() {
+        appml('nome1').run(somarNome())
+    }
+    function somarNome() {
+        this.data2.nome = this.data2.nome
+        this.data2.fn = i++
+    }
+    function subtrairNome() {
+        this.data2.nome = this.data2.nome;
+        this.data2.fn = i--
+    }
+</script>
+
+<script type="module">
+    import data from './script2.js';
+
+    dados = data.default;
+    console.log(data);
+
+function myController($appml) {
+    if ($appml.message == "display") {
+        if ($appml.display.name == "CustomerName") {
+            $appml.display.value = $appml.display.value.toUpperCase();
+        }
+    }
+}
+
+</script>
+
+</html>
