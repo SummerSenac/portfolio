@@ -65,6 +65,33 @@
 
 </ul>
 
+<!-- <form>
+    <input type="text" name="coat" value="1" />
+    <input type="number" name="jacket" value="2"/>
+    <input type="number" name="jeans" value="3"/>
+    <input type="number" name="guid" value="4"/>
+    
+  <select name="education">
+    <option value="Jr.High">Jr.High</option>
+    <option value="HighSchool">HighSchool</option>
+    <option value="College">College</option>
+  </select>
+  <textarea name="something">lorem ipsum</textarea>
+  <input type="submit"  value="Enviar"/>
+  </form>
+  
+  <div id="result"></div> -->
+
+<!-- <script>
+
+    $('form').submit(function () {
+        var result = $("form").serializeFields();
+        $("#result").html(JSON.stringify(result));
+        console.log(result)
+        return false;
+    });
+</script> -->
+
 <script>
 
     // Mostrar o formulário de inserção do aluno
@@ -191,10 +218,10 @@
             },
             submitHandler: function (form) {
 
-                    var result = $("form").serializeFields();
-                    // $("#result").html(JSON.stringify(result));
-                    delete result['action']
-                    console.log(result)
+                var result = $("form").serializeFields();
+                // $("#result").html(JSON.stringify(result));
+                delete result['action']
+                console.log(result)
 
 
                 var dados = $("input")
