@@ -177,7 +177,8 @@
     }
 
     // Salvar dados do aluno
-    function salvarDados() {;
+    function salvarDados() {
+        var result = $("form").serializeFields();
 
         $.validator.setDefaults({
             errorClass: 'invalid',
@@ -190,12 +191,40 @@
             },
             submitHandler: function (form) {
 
-                $.post("https://api-server-senac.herokuapp.com/alunos", dadosSalvar, function (result) {
-                    console.log('os dados foram salvos', result)
-                    cancelar()
-                    listarDados()
-                })
-                console.log('form ok');
+                    var result = $("form").serializeFields();
+                    // $("#result").html(JSON.stringify(result));
+                    delete result['action']
+                    console.log(result)
+
+
+                var dados = $("input")
+
+                dadosSalvar = {
+                    nome: dados[1].value,
+                    curso: dados[2].value,
+                    matricula: dados[3].value
+                }
+
+                // fetch("https://api-server-senac.herokuapp.com/alunos",
+                //     {
+                //         method: "post",
+                //         body: JSON.stringify(dadosSalvar),
+                //         headers: {
+                //             "Content-type": "application/json; charset=UTF-8"
+                //         }
+                //     }).then(function (res) {
+                //         console.log('os dados foram salvos', res)
+                //         cancelar()
+                //         listarDados()
+                //     })
+
+                // $.post("https://api-server-senac.herokuapp.com/alunos", dadosSalvar, function (result) {
+                //     console.log('os dados foram salvos', result)
+                //     cancelar()
+                //     listarDados()
+                // })
+
+                // console.log('form ok', dadosSalvar);
             }
         });
 
@@ -239,18 +268,6 @@
                 }
             }
         });
-        // console.log($('#formularioValidation').valid())
-
-
-        var dados = $("input")
-
-        dadosSalvar = {
-            nome: dados[1].value,
-            curso: dados[2].value,
-            matricula: dados[3].value
-        }
-
-
     }
 
 
@@ -264,10 +281,6 @@
             matricula: dados[3].value
         }
         console.log('dados pra salvar', dadosSalvar)
-
-        // fetch("http://localhost:3000/alunos", {method: "post", body: dadosSalvar}).then(function (res){
-        //     console.log('os dados foram salvos', res)
-        // })
 
         $.ajax({
             type: "PUT",
