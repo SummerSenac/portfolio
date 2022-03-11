@@ -1,1 +1,98 @@
 <h1><i class="medium material-icons">dialpad</i> CALCULADORA</h1>
+
+
+<div class="container">
+    <div class="row">
+        <div class="row result-calc">
+            <div id="result" class="col s12 grey darken-4 result-calc">
+                0
+            </div>
+        </div>
+        <div class="col s3">
+            <button class=" waves-effect waves-light calc-font btn-large" onclick="btnChage(1)">1</button>
+            <button class=" waves-effect waves-light calc-font btn-large" onclick="btnChage(4)">4</button>
+            <button class=" waves-effect waves-light calc-font btn-large" onclick="btnChage(7)">7</button>
+            <button class=" waves-effect waves-light calc-font btn-large" onclick="btnChage(0)">0</button>
+        </div>
+        <div class="col s3">
+            <button class=" waves-effect waves-light calc-font btn-large" onclick="btnChage(2)">2</button>
+            <button class=" waves-effect waves-light calc-font btn-large" onclick="btnChage(5)">5</button>
+            <button class=" waves-effect waves-light calc-font btn-large" onclick="btnChage(8)">8</button>
+            <button class=" waves-effect waves-light deep-orange accent-3 calc-font btn-large"
+                onclick="btnChage('c')">C</button>
+        </div>
+        <div class="col s3">
+            <button class=" waves-effect waves-light calc-font btn-large" onclick="btnChage(3)">3</button>
+            <button class=" waves-effect waves-light calc-font btn-large" onclick="btnChage(6)">6</button>
+            <button class=" waves-effect waves-light calc-font btn-large" onclick="btnChage(9)">9</button>
+            <button class=" waves-effect waves-light calc-font grey lighten-1 btn-large"
+                onclick="btnChage('=')">=</button>
+        </div>
+        <div class="col s3">
+            <button class=" waves-effect waves-light blue lighten-1 calc-font btn-large"
+                onclick="btnChage('-')">-</button>
+            <button class=" waves-effect waves-light blue lighten-1 calc-font btn-large"
+                onclick="btnChage('+')">+</button>
+            <button class=" waves-effect waves-light blue lighten-1 calc-font btn-large"
+                onclick="btnChage('/')">/</button>
+            <button class=" waves-effect waves-light blue lighten-1 calc-font btn-large"
+                onclick="btnChage('*')">*</button>
+        </div>
+    </div>
+
+
+</div>
+<script>
+    var calc = false
+
+    function btnChage(a) {
+        var result = $('#result').html();
+        if (a === 'c') {
+            $('#result').html(0)
+            calc = false
+        } else if (calc == true) {
+            $('#result').html(a == "=" ? 0 : result)
+            calc = false
+        } else {
+            if (result == 0 && calc == false && a != 0) {
+                $('#result').html(a == "=" || a == '+' || a == '-' || a == '/' || a == '*' ? 0 : a);
+            } else {
+                result = result + '' + a;
+                let arrCalc1 = result.match(/\+/g) ? result.match(/\+/g).length : 0
+                let arrCalc2 = result.match(/\//g) ? result.match(/\//g).length : 0
+                let arrCalc3 = result.match(/\*/g) ? result.match(/\*/g).length : 0
+                let arrCalc4 = result.match(/\-/g) ? result.match(/\-/g).length : 0
+                console.log('arrs', arrCalc1, arrCalc2, arrCalc3, arrCalc4)
+                if (a != '=' && arrCalc1 < 2 && arrCalc1 > 0) {
+                    $('#result').html(result);
+                } else if (a != '=' && arrCalc2 < 2 && arrCalc2 > 0) {
+                    $('#result').html(result);
+                } else if (a != '=' && arrCalc3 < 2 && arrCalc3 > 0) {
+                    $('#result').html(result);
+                } else if (a != '=' && arrCalc4 < 2 && arrCalc4 > 0) {
+                    $('#result').html(result);
+                } else {
+                    var resultado = 0;
+                    calc = true
+
+                    if (result.split('+').length >= 2 && result.indexOf('+') > -1) {
+                        result = result.split('+')
+                        resultado = parseInt(result[0]) + parseInt(result[1])
+                    } else if (result.split('-').length >= 2 && result.indexOf('-') > -1) {
+                        result = result.split('-')
+                        resultado = parseInt(result[0]) - parseInt(result[1])
+                    } else if (result.split('*').length >= 2 && result.indexOf('*') > -1) {
+                        result = result.split('*')
+                        resultado = parseInt(result[0]) * parseInt(result[1])
+                    } else if (result.split('/').length >= 2 && result.indexOf('/') > -1) {
+                        result = result.split('/')
+                        resultado = parseInt(result[0]) / parseInt(result[1])
+                    }
+
+                    $('#result').html(Boolean(resultado) == false ? 0 : resultado);
+
+                }
+            }
+        }
+    }
+</script>

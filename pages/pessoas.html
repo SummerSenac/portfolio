@@ -63,24 +63,56 @@
 
 <ul id="pessoas" class="collection">
 
+
 </ul>
+
+<div class="row center">
+    <div class="s12">
+        <ul class="pagination">
+            <li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
+            <li class="active"><a onclick="listarDados()">1</a></li>
+            <li class="waves-effect"><a onclick="listarDados()">2</a></li>
+            <li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
+        </ul>
+    </div>
+</div>
+
 
 <!-- <form>
     <input type="text" name="coat" value="1" />
-    <input type="number" name="jacket" value="2"/>
-    <input type="number" name="jeans" value="3"/>
-    <input type="number" name="guid" value="4"/>
-    
-  <select name="education">
-    <option value="Jr.High">Jr.High</option>
-    <option value="HighSchool">HighSchool</option>
-    <option value="College">College</option>
-  </select>
-  <textarea name="something">lorem ipsum</textarea>
-  <input type="submit"  value="Enviar"/>
-  </form>
-  
-  <div id="result"></div> -->
+    <input type="number" name="jacket" value="2" />
+    <input type="number" name="jeans" value="3" />
+    <input type="number" name="guid" value="4" />
+
+    <input name="dt2" type="checkbox">
+    <input name="dt4" type="color">
+    <input name="dt5" type="date">
+    <input name="dt6" type="datetime-local">
+    <input name="dt7" type="email"><br>
+    <input name="dt8" type="file"><br>
+    <input name="dt9" type="hidden"><br>
+    <input name="dt11" type="month"><br>
+    <input name="dt12" type="number"><br>
+    <input name="dt13" type="password"><br>
+    <input name="dt14" type="radio"><br>
+    <input name="dt15" type="range"><br>
+    <input name="dt16" type="reset"><br>
+    <input name="dt17" type="search"><br>
+    <input name="dt19" type="tel"><br>
+    <input name="dt20" type="time"><br>
+    <input name="dt21" type="url"><br>
+    <input name="dt22" type="week">
+
+    <select name="education">
+        <option value="Jr.High">Jr.High</option>
+        <option value="HighSchool">HighSchool</option>
+        <option value="College">College</option>
+    </select>
+    <textarea name="something">lorem ipsum</textarea>
+    <input type="submit" value="Enviar" />
+</form>
+
+<div id="result"></div> -->
 
 <!-- <script>
 
@@ -141,8 +173,10 @@
     }
 
     // Carregar dados de todos os alunos
+    var page = 0
     function listarDados() {
-        $.getJSON('https://api-server-senac.herokuapp.com/alunos', function (data, status) {
+        page++
+        $.getJSON(`https://api-server-senac.herokuapp.com/alunos?_page=${page}&_limit=5`, function (data, status) {
             console.log(data)
             let pessoas = []
 
@@ -218,7 +252,9 @@
             },
             submitHandler: function (form) {
 
-                var result = $("form").serializeFields();
+                console.log('form aaa', form)
+
+                var result = $('form').serializeFields();
                 // $("#result").html(JSON.stringify(result));
                 delete result['action']
                 console.log(result)
@@ -232,18 +268,19 @@
                     matricula: dados[3].value
                 }
 
-                // fetch("https://api-server-senac.herokuapp.com/alunos",
-                //     {
-                //         method: "post",
-                //         body: JSON.stringify(dadosSalvar),
-                //         headers: {
-                //             "Content-type": "application/json; charset=UTF-8"
-                //         }
-                //     }).then(function (res) {
-                //         console.log('os dados foram salvos', res)
-                //         cancelar()
-                //         listarDados()
-                //     })
+                fetch("https://api-server-senac.herokuapp.com/alunos",
+                    {
+                        method: "post",
+                        body: JSON.stringify(dadosSalvar),
+                        headers: {
+                            "Content-type": "application/json; charset=UTF-8"
+                        }
+                    }).then(async function (res) {
+                        let dt = await res.json()
+                        console.log('os dados foram salvos', dt)
+                        cancelar()
+                        listarDados()
+                    })
 
                 // $.post("https://api-server-senac.herokuapp.com/alunos", dadosSalvar, function (result) {
                 //     console.log('os dados foram salvos', result)

@@ -24,3 +24,16 @@
 .actionBtnEdit{
   margin-right: 42px
 }
+
+.calc-font{
+  font-size: 20px;
+  margin-bottom: 7px;
+  width: 100%;
+}
+
+.result-calc{
+  color: white;
+  font-size: 37px;
+  border-radius: 3px;
+  width: 97%;
+}
