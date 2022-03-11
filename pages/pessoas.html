@@ -174,9 +174,10 @@
 
     // Carregar dados de todos os alunos
     var page = 0
+    var limit = 15
     function listarDados() {
-        page++
-        $.getJSON(`https://api-server-senac.herokuapp.com/alunos?_page=${page}&_limit=5`, function (data, status) {
+        // page++
+        $.getJSON(`https://api-server-senac.herokuapp.com/alunos?_page=${page}&_limit=${limit}`, function (data, status) {
             console.log(data)
             let pessoas = []
 
@@ -278,8 +279,8 @@
                     }).then(async function (res) {
                         let dt = await res.json()
                         console.log('os dados foram salvos', dt)
-                        cancelar()
                         listarDados()
+                        cancelar()
                     })
 
                 // $.post("https://api-server-senac.herokuapp.com/alunos", dadosSalvar, function (result) {
