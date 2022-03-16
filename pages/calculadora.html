@@ -4,7 +4,7 @@
 <div class="container">
     <div class="row">
         <div class="row result-calc">
-            <div id="resultadoCalc" class="col s12 grey darken-4 result-calc">0</div>
+            <div id="displayCalculadora" class="col s12 grey darken-4 result-calc">0</div>
         </div>
         <div class="col s3">
             <button class=" waves-effect waves-light calc-font btn-large" onclick="btnClique(1)">1</button>
@@ -42,114 +42,72 @@
 </div>
 <script>
 
-    function returnTipoOperacao(resultado) {
+    const operadores = ['+', '-', '*', '/', '=']
 
-        let adicao = resultado.match(/\+/g) ? resultado.match(/\+/g).length : 0
-        let divisao = resultado.match(/\//g) ? resultado.match(/\//g).length : 0
-        let multiplicacao = resultado.match(/\*/g) ? resultado.match(/\*/g).length : 0
-        let subtracao = resultado.match(/\-/g) ? resultado.match(/\-/g).length : 0
-
-        if (adicao == 1) {
-            return '+'
-        } else if (divisao == 1) {
-            return '/'
-        } else if (multiplicacao == 1) {
-            return '*'
-        } else if (subtracao == 1 && resultado.indexOf('-')) {
-            return '-'
-        } else {
-            return false
+    function verDigitoOperador(valorDigito) {
+        if (operadores.includes(valorDigito)) {
+            return true;
         }
+        return false;
     }
 
-
-    function returnTermosOperacao(termos) {
-
-        let adicao = termos.split('+')
-        let subtracao = termos.split('-')
-        let multiplicacao = termos.split('*')
-        let divisao = termos.split('/')
-
-        if (Boolean(adicao[1])) {
-            return adicao
-        } else if (Boolean(subtracao[1])) {
-            return subtracao
-        } else if (Boolean(multiplicacao[1])) {
-            return multiplicacao
-        } else if (Boolean(divisao[1])) {
-            return divisao
-        } else {
-            return false
-        }
-    }
-
-    function returnarResultadoOperacao(operador, termos) {
-
-        if (operador == '+' && termos) {
-            return parseInt(termos[0]) + parseInt(termos[1])
-        } else if (operador == '-' && termos) {
-            return parseInt(termos[0]) - parseInt(termos[1])
-        } else if (operador == '*' && termos) {
-            return parseInt(termos[0]) * parseInt(termos[1])
-        } else if (operador == '/' && termos) {
-            return parseInt(termos[0]) / parseInt(termos[1])
-        } else {
-            return false
-        }
-
-    }
-
-    function addDigito(valorDisplay, digito, operacao) {
-        console.log('operação', operacao)
-        console.log('sim', valorDisplay.indexOf('-'))
-
-        if (valorDisplay == '0') {
-            return digito
-        } else if (valorDisplay > '0' && digito == '=') {
-            return valorDisplay
-        } else if (operacao && (digito == '+' || digito == '-' || digito == '*' || digito == '/')) {
-            return valorDisplay
-        } else if (valorDisplay.indexOf('-') == 0 && (digito == '-' || digito == '*' || digito == '/')){
-            console.log('sim', valorDisplay.indexOf('-'))
-            return valorDisplay
-        } else {
-            valorDisplay = valorDisplay + '' + digito;
-            return valorDisplay
-        }
-
-    }
-
-
-    function btnClique(digito) {
-
-        var resultadoFinal = 0
-        var displayCalc = $('#resultadoCalc')
-        var resultadoCalc = displayCalc.html();
-        var operacao = returnTipoOperacao(resultadoCalc)
-        var termos = returnTermosOperacao(resultadoCalc)
-
-        if (digito == 'c') {
-            displayCalc.html(0)
-        }
-        else if (digito == '+' || digito == '-' || digito == '*' || digito == '/' || digito == '=') {
-            console.log('digitou o operador', digito)
-            if (displayCalc.html() == '0') {
-                console.log('apertei operador sem valor', digito)
-                displayCalc.html('0')
+    function pegarTermos(displayCalculadora) {
+        for (let operador of operadores) {
+            if (displayCalculadora.indexOf(operador) != -1) {
+                return displayCalculadora.split(operador)
             }
-            else {
-                if (operacao && termos) {
-                    console.log('fazaendo calculo', operacao, termos)
-                    resultadoFinal = returnarResultadoOperacao(operacao, termos)
-                    displayCalc.html(resultadoFinal)
+        }
+        return false
+    }
+
+
+    function fazerCalculo(displayCalculadora) {
+        for (let operador of operadores) {
+            if (displayCalculadora.indexOf(operador) != -1) {
+                let termosCalculo = pegarTermos(displayCalculadora)
+                if (Boolean(termosCalculo[0]) && Boolean(termosCalculo[1])) {
+                    return eval(displayCalculadora)
                 } else {
-                    let digitoAdicionado = addDigito(resultadoCalc, digito, operacao)
-                    displayCalc.html(digitoAdicionado)
+                    return false
                 }
             }
+        }
+        return false
+    }
+
+
+    function adicionarDigito(displayCalculadora, valorDigito) {
+        let resultadoCalculo = fazerCalculo(displayCalculadora)
+        let temOperador = pegarTermos(displayCalculadora)
+        let digitoOperador = verDigitoOperador(valorDigito)
+
+        if (displayCalculadora == '0') {
+            return valorDigito
+        } else if ((resultadoCalculo || resultadoCalculo === 0) && digitoOperador) {
+            return resultadoCalculo
+        } else if (temOperador && digitoOperador) {
+            return displayCalculadora
         } else {
-            let valorDisplay = addDigito(resultadoCalc, digito, operacao)
-            displayCalc.html(valorDisplay)
+            displayCalculadora = displayCalculadora + '' + valorDigito;
+            return displayCalculadora
+        }
+
+    }
+
+
+    function btnClique(valorDigito) {
+        let displayCalc = $('#displayCalculadora')
+        let displayCalculadora = displayCalc.html();
+
+        if (valorDigito == 'c') {
+            displayCalc.html(0)
+        } else if (displayCalculadora == '0' && verDigitoOperador(valorDigito)) {
+            displayCalc.html(0)
+        } else if (displayCalculadora > 0 && valorDigito == '=') {
+            displayCalc.html(displayCalculadora)
+        } else {
+            let resultadoAdicionar = adicionarDigito(displayCalculadora, valorDigito)
+            displayCalc.html(resultadoAdicionar)
         }
 
     }
