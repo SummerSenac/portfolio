@@ -19,7 +19,7 @@
 </style>
 
 <div hidden id="formCrud" class="row">
-    <form id="formularioValidation" novalidate="novalidate" class="col s12">
+    <!-- <form id="formularioValidation" novalidate="novalidate" class="col s12">
         <div class="row">
             <div id="inputId" class="input-field col s12">
                 <input disabled placeholder="0" id="id" type="text">
@@ -51,7 +51,7 @@
         <button id="btnSalvar" onclick="salvarDados()" class="btn waves-effect waves-light" name="action">Salvar
             <i class="material-icons right">send</i>
         </button>
-    </form>
+    </form> -->
     <button hidden id="btnAtualizar" onclick="atualizarDados()" class="btn waves-effect waves-light"
         name="action">Atualizar
         <i class="material-icons right">send</i>
@@ -78,10 +78,10 @@
 </div>
 
 
-<!-- <form>
+<form id="formVal">
     <input type="text" name="coat" value="1" />
     <input type="number" name="jacket" value="2" />
-    <input type="number" name="jeans" value="3" />
+    <input type="text" id="cpf" name="jeans" />
     <input type="number" name="guid" value="4" />
 
     <input name="dt2" type="checkbox">
@@ -103,26 +103,45 @@
     <input name="dt21" type="url"><br>
     <input name="dt22" type="week">
 
-    <select name="education">
+    <select name="medico" class="browser-default">
+        <option value="" disabled selected>Choose your option</option>
         <option value="Jr.High">Jr.High</option>
         <option value="HighSchool">HighSchool</option>
         <option value="College">College</option>
     </select>
+    <label>Materialize Select</label>
+
     <textarea name="something">lorem ipsum</textarea>
     <input type="submit" value="Enviar" />
 </form>
 
-<div id="result"></div> -->
-
-<!-- <script>
+<div id="result"></div>
+<script>
+    $(document).ready(function () {
+        $('#cpf').mask('(00) 0 0000-0000')
+    });
 
     $('form').submit(function () {
         var result = $("form").serializeFields();
         $("#result").html(JSON.stringify(result));
         console.log(result)
         return false;
+        $("formVal").validate({
+            rules: {
+                cpf: {
+                    required: true,
+                    cpf: true
+                },
+            },
+            messages: {
+                cpf: {
+                    required: "Por favor, informe o CPF",
+                    validateCPF: "CPF inválido"
+                }
+            }
+        });
     });
-</script> -->
+</script>
 
 <script>
 
@@ -293,6 +312,7 @@
             }
         });
 
+
         $("#formularioValidation").validate({
             // debug: true,
             rules: {
@@ -371,4 +391,60 @@
             }
         });
     }
+</script>
+
+<script>
+        jQuery.validator.addMethod("cpf", function (a) {
+            var b = this;
+            var c = b.val().replace('.', '').replace('.', '').replace('-', '');
+            if (c.length != 11) {
+                return false;
+            } else {
+                var d = /1{11}|2{11}|3{11}|4{11}|5{11}|6{11}|7{11}|8{11}|9{11}|0{11}/;
+                if (d.test(c)) {
+                    return false;
+                } else {
+                    var x = 0;
+                    var y = 0;
+                    var e = 0;
+                    var f = 0;
+                    var g = 0;
+                    var h = "";
+                    var k = "";
+                    var l = c.length;
+                    x = l - 1;
+                    for (var i = 0; i <= l - 3; i++) {
+                        y = c.substring(i, i + 1);
+                        e = e + (y * x);
+                        x = x - 1;
+                        h = h + y;
+                    }
+                    f = 11 - (e % 11);
+
+                    if (f == 10 || f == 11) {
+                        f = 0;
+                    }
+
+                    k = c.substring(0, l - 2) + f;
+                    x = 11;
+                    e = 0;
+                    for (var j = 0; j <= (l - 2); j++) {
+                        e = e + (k.substring(j, j + 1) * x);
+                        x = x - 1;
+                    }
+                    g = 11 - (e % 11);
+                    if (g == 10) {
+                        g = 0;
+                    }
+                    if (g == 11) {
+                        g = 0;
+                    }
+                    if ((f + "" + g) == c.substring(l, l - 2)) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            }
+        })
 </script>
